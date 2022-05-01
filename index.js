@@ -13,7 +13,7 @@ const owoRule = new RecurrenceRule();
 owoRule.second = [0, 29, 52];
 
 const wakeUpRule = new RecurrenceRule();
-wakeUpRule.hour = [7, 9, 11, 13, 17, 19];
+wakeUpRule.hour = [7, 11, 13, 19];
 /**
  * @type { Job }
  */
@@ -194,14 +194,7 @@ function checkTimeSpam() {
   const d = new Date();
   let hour = d.getHours();
   if (hour < 3) return 0;
-  if (
-    hour === 7 ||
-    hour === 9 ||
-    hour === 11 ||
-    hour === 13 ||
-    hour === 17 ||
-    hour === 19
-  ) {
+  if (hour === 7 || hour === 11 || hour === 13 || hour === 19) {
     return 1;
   }
   return 0;
