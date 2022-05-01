@@ -13,7 +13,7 @@ const owoRule = new RecurrenceRule();
 owoRule.second = [0, 29, 52];
 
 const wakeUpRule = new RecurrenceRule();
-wakeUpRule.hour = [0, 2, 6, 12];
+wakeUpRule.hour = [0, 4, 6, 12];
 /**
  * @type { Job }
  */
@@ -193,7 +193,7 @@ function getRandomInt(max) {
 function checkTimeSpam() {
   const d = new Date();
   let hour = d.getHours();
-  if (hour === 0 || hour === 2 || hour === 6 || hour === 12) {
+  if (hour === 0 || hour === 4 || hour === 6 || hour === 12) {
     return 1;
   }
   return 0;
