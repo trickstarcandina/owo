@@ -7,18 +7,15 @@ let channel = process.env.CHANNEL;
 let owner = process.env.OWNER;
 const huntBattleRule = new RecurrenceRule();
 huntBattleRule.second = [0, 36];
-const buyRule = new RecurrenceRule();
-buyRule.second = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
 const owoRule = new RecurrenceRule();
-owoRule.second = [0, 29, 52];
+owoRule.second = [10, 42];
 
 const wakeUpRule = new RecurrenceRule();
-wakeUpRule.hour = [0, 4, 6, 12];
+wakeUpRule.hour = [0, 4, 6, 10, 12];
 /**
  * @type { Job }
  */
 let huntJob;
-let buyJob;
 let owoJob;
 
 let wakeUpJob;
@@ -26,22 +23,16 @@ let wakeUpJob;
 client.on("ready", () => {
   console.log("Quẩy lên!");
 
-  if (!data.disable.hunt || !data.disable.battle)
-    huntJob = scheduleJob(huntBattleRule, () => {
-      setTimeout(() => {
-        if (!data.disable.hunt) client.channels.cache.get(channel).send("owoh");
-      }, getRandomInt(1200));
-      setTimeout(() => {
-        if (!data.disable.battle)
-          client.channels.cache.get(channel).send("owob");
-      }, getRandomInt(1200));
-    });
-
-  buyJob = scheduleJob(buyRule, () => {
-    if (!data.disable.buy) client.channels.cache.get(channel).send("owobuy 1");
+  huntJob = scheduleJob(huntBattleRule, () => {
+    setTimeout(() => {
+      client.channels.cache.get(channel).send("owoh");
+    }, getRandomInt(1200));
+    setTimeout(() => {
+      client.channels.cache.get(channel).send("owob");
+    }, getRandomInt(1200));
   });
   owoJob = scheduleJob(owoRule, () => {
-    if (!data.disable.owo) client.channels.cache.get(channel).send("owo");
+    client.channels.cache.get(channel).send("owo");
   });
 
   wakeUpJob = scheduleJob(wakeUpRule, () => {
@@ -60,7 +51,6 @@ client.on("message", (message) => {
   ) {
     //stop
     huntJob.cancel();
-    buyJob.cancel();
     owoJob.cancel();
 
     let randomGem = getRandomInt(data.inv.length);
@@ -77,7 +67,6 @@ client.on("message", (message) => {
         );
     }, 1686);
     //cont
-    buyJob.reschedule(buyRule);
     huntJob.reschedule(huntBattleRule);
     owoJob.reschedule(owoRule);
   }
@@ -107,11 +96,9 @@ client.on("message", async (message) => {
       }
     }
     if (flag === 0) {
-      buyJob.cancel();
       huntJob.cancel();
       owoJob.cancel();
     } else if (flag > 0) {
-      buyJob.reschedule(buyRule);
       huntJob.reschedule(huntBattleRule);
       owoJob.reschedule(owoRule);
     }
@@ -138,7 +125,6 @@ client.on("message", async (message) => {
         message.content.toLowerCase().includes(phrase.toLowerCase())
       )
     ) {
-      buyJob.cancel();
       huntJob.cancel();
       owoJob.cancel();
       if (client.user.id === owner) return;
@@ -147,14 +133,12 @@ client.on("message", async (message) => {
         client.users.cache.get(owner).send(message.attachments.first());
     }
     if (message.content.includes("Thank you! :3")) {
-      buyJob.reschedule(buyRule);
       huntJob.reschedule(huntBattleRule);
       owoJob.reschedule(owoRule);
       if (client.user.id === owner) return;
       client.users.cache.get(owner).send(message.content);
     }
   } else {
-    buyJob.cancel();
     huntJob.cancel();
     owoJob.cancel();
   }
@@ -171,11 +155,9 @@ client.on("message", (message) => {
   if (message.channel.id === channel && message.author.id === owner) {
     if (message.content.toLowerCase() === "spy!stop") {
       huntJob.cancel();
-      buyJob.cancel();
       owoJob.cancel();
     }
     if (message.content.toLowerCase() === "spy!cont") {
-      buyJob.reschedule(buyRule);
       huntJob.reschedule(huntBattleRule);
       owoJob.reschedule(owoRule);
     }
@@ -193,7 +175,7 @@ function getRandomInt(max) {
 function checkTimeSpam() {
   const d = new Date();
   let hour = d.getHours();
-  if (hour === 0 || hour === 4 || hour === 6 || hour === 12) {
+  if (hour === 0 || hour === 4 || hour === 6 || hour === 10 || hour === 12) {
     return 1;
   }
   return 0;
