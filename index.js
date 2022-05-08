@@ -8,10 +8,10 @@ let owner = process.env.OWNER;
 const huntBattleRule = new RecurrenceRule();
 huntBattleRule.second = [0, 36];
 const owoRule = new RecurrenceRule();
-owoRule.second = [10, 42];
+owoRule.second = [42];
 
 const wakeUpRule = new RecurrenceRule();
-wakeUpRule.hour = [0, 4, 6, 10, 12];
+wakeUpRule.hour = [0, 4, 7, 9, 12, 14];
 /**
  * @type { Job }
  */
@@ -175,7 +175,14 @@ function getRandomInt(max) {
 function checkTimeSpam() {
   const d = new Date();
   let hour = d.getHours();
-  if (hour === 0 || hour === 4 || hour === 6 || hour === 10 || hour === 12) {
+  if (
+    hour === 0 ||
+    hour === 4 ||
+    hour === 7 ||
+    hour === 9 ||
+    hour === 12 ||
+    hour === 14
+  ) {
     return 1;
   }
   return 0;
