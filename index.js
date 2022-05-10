@@ -12,17 +12,17 @@ owoRule.second = [42];
 
 const wakeUpRule = new RecurrenceRule();
 wakeUpRule.hour = [0, 4, 7, 9, 12, 14];
+wakeUpRule.minute = [1];
+wakeUpRule.second = [0];
 /**
  * @type { Job }
  */
 let huntJob;
 let owoJob;
-
 let wakeUpJob;
 
 client.on("ready", () => {
   console.log("Quẩy lên!");
-
   huntJob = scheduleJob(huntBattleRule, () => {
     setTimeout(() => {
       client.channels.cache.get(channel).send("owoh");
@@ -98,11 +98,9 @@ client.on("message", async (message) => {
     if (flag === 0) {
       huntJob.cancel();
       owoJob.cancel();
-      wakeUpJob.cancel();
     } else if (flag > 0) {
       huntJob.reschedule(huntBattleRule);
       owoJob.reschedule(owoRule);
-      wakeUpJob.reschedule(wakeUpRule);
     }
 
     // check captcha
@@ -129,7 +127,6 @@ client.on("message", async (message) => {
     ) {
       huntJob.cancel();
       owoJob.cancel();
-      wakeUpJob.cancel();
       if (client.user.id === owner) return;
       client.users.cache.get(owner).send(message.content);
       if (!!message.attachments.size)
@@ -138,14 +135,12 @@ client.on("message", async (message) => {
     if (message.content.includes("Thank you! :3")) {
       huntJob.reschedule(huntBattleRule);
       owoJob.reschedule(owoRule);
-      wakeUpJob.reschedule(wakeUpRule);
       if (client.user.id === owner) return;
       client.users.cache.get(owner).send(message.content);
     }
   } else {
     huntJob.cancel();
     owoJob.cancel();
-    wakeUpJob.cancel();
   }
 });
 
@@ -161,12 +156,10 @@ client.on("message", (message) => {
     if (message.content.toLowerCase() === "spy!stop") {
       huntJob.cancel();
       owoJob.cancel();
-      wakeUpJob.cancel();
     }
     if (message.content.toLowerCase() === "spy!cont") {
       huntJob.reschedule(huntBattleRule);
       owoJob.reschedule(owoRule);
-      wakeUpJob.reschedule(wakeUpRule);
     }
   }
 });
